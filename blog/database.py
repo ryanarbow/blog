@@ -1,9 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-import datetime
-
-from sqlalchemy import Column, Integer, String, Text, DateTime
 
 from . import app
 
@@ -12,6 +9,9 @@ Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 
+import datetime
+
+from sqlalchemy import Column, Integer, String, Text, DateTime
 
 class Entry(Base):
     __tablename__ = "entries"

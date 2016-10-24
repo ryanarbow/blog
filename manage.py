@@ -1,5 +1,5 @@
 import os
-from flask_script import Manager
+from flask.ext.script import Manager
 
 from blog import app
 from blog.database import session, Entry
@@ -10,7 +10,6 @@ manager = Manager(app)
 def run():
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port)
-
 
 @manager.command
 def seed():
