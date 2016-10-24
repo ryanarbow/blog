@@ -46,3 +46,7 @@ def add_entry_post():
     session.add(entry)
     session.commit()
     return redirect(url_for("entries"))
+
+@app.route("/entry/edit")
+def entry():
+    return render_template("entry_view.html", entry=entry)
