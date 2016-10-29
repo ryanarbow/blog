@@ -65,7 +65,7 @@ def edit_entry_post(id):
         title=request.form["title"],
         content=request.form["content"],
     )
-    session.add(entry)
+    #session.add(entry)
     session.commit()
     return redirect(url_for("entries"))
     
