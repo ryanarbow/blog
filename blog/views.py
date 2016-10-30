@@ -9,6 +9,7 @@ PAGINATE_BY = 10
 @app.route("/page/<int:page>")
 def entries(page=1):
     # Zero-indexed page
+    
     page_index = page - 1
 
     count = session.query(Entry).count()
