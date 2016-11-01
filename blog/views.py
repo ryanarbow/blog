@@ -2,6 +2,10 @@ from flask import render_template
 from . import app
 from .database import session, Entry
 from flask import request, redirect, url_for
+from flask import flash
+from flask.ext.login import login_user
+from werkzeug.security import check_password_hash
+from .database import User
 
 PAGINATE_BY = 10
 
@@ -13,11 +17,13 @@ def entries(page=1):
     page_index = page - 1
 
     count = session.query(Entry).count()
+    
+    paginate_by = int(request.args.get('entries_per', PAGINATE_BY))
 
-    start = page_index * PAGINATE_BY
-    end = start + PAGINATE_BY
+    start = page_index * paginate_by
+    end = start + paginate_by
 
-    total_pages = (count - 1) // PAGINATE_BY + 1
+    total_pages = (count - 1) // paginate_by + 1
     has_next = page_index < total_pages - 1
     has_prev = page_index > 0
 
@@ -32,7 +38,7 @@ def entries(page=1):
         page=page,
         total_pages=total_pages
     )
-
+    
 @app.route("/entry/add", methods=["GET"])
 def add_entry_get():
     return render_template("add_entry.html")
@@ -83,3 +89,19 @@ def delete_entry_post(id):
     session.delete(entry)
     session.commit()
     return redirect(url_for("entries"))
+
+@app.route("/login", methods=["GET"])
+def login_get():
+    return render_template("login.html")
+    
+@app.route("/login", methods=["POST"])
+def login_post():
+    email = request.form["email"]
+    password = request.form["password"]
+    user = session.query(User).filter_by(email=email).first()
+    if not user or not check_password_hash(user.password, password):
+        flash("Incorrect username or password", "danger")
+        return redirect(url_for("login_get"))
+
+    login_user(user)
+    return redirect(request.args.get('next') or url_for("entries"))
