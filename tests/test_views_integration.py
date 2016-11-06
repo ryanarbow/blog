@@ -53,6 +53,48 @@ class TestViews(unittest.TestCase):
         self.assertEqual(entry.title, "Test Entry")
         self.assertEqual(entry.content, "Test content")
         self.assertEqual(entry.author, self.user)
+    
+    #Entry view test    
+    def test_view_entry(self):
+        self.simulate_login()
+        
+        response = self.client.post("/entry/add", data={
+            "title": "Test Entry",
+            "content": "Test content"
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlparse(response.location).path, "/")
+        entries = session.query(Entry).all()
+        self.assertEqual(len(entries), 1)
+
+        entry = entries[0]
+        response = self.client.get("/entry/{}".format(entry.id))
+        self.assertEqual(response.status_code, 200)
+    
+    #Entry delete test
+    def test_del_entry(self):
+        self.simulate_login()
+        
+        response = self.client.post("/entry/add", data={
+            "title": "Test Entry",
+            "content": "Test content"
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlparse(response.location).path, "/")
+        entries = session.query(Entry).all()
+        self.assertEqual(len(entries), 1)
+
+        entry = entries[0]
+        response = self.client.post("/entry/{}/delete".format(entry.id))
+        
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlparse(response.location).path, "/")
+        entries = session.query(Entry).all()
+        self.assertEqual(len(entries), 0)
+        
+    #Entry edit test
 
 if __name__ == "__main__":
     unittest.main()
