@@ -88,7 +88,6 @@ class TestViews(unittest.TestCase):
 
         entry = entries[0]
         response = self.client.post("/entry/{}/delete".format(entry.id))
-        
         self.assertEqual(response.status_code, 302)
         self.assertEqual(urlparse(response.location).path, "/")
         entries = session.query(Entry).all()
