@@ -92,8 +92,6 @@ class TestViews(unittest.TestCase):
         self.assertEqual(urlparse(response.location).path, "/")
         entries = session.query(Entry).all()
         self.assertEqual(len(entries), 0)
-        
-    #Entry edit test
 
 if __name__ == "__main__":
     unittest.main()
